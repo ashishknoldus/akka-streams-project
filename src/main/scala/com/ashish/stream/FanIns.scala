@@ -11,9 +11,9 @@ private[stream] sealed trait FanIns
   * GraphDSL.Builder is immutable by nature!!!! Hence this object is created as package private.
   */
 private[stream] object StringsToTupleZipper extends FanIns {
-  def apply(initialBuffer: Int = 1, maxBuffer: Int = 1)(implicit builder: GraphDSL.Builder[NotUsed]) =
+  def apply(initialBuffer: Int = 256, maxBuffer: Int = 4096)(implicit builder: GraphDSL.Builder[NotUsed]) =
     builder.add(ZipWith[String, String, ByteString]((str1, str2) => ByteString("" + (str1, str2)))
-      .async.withAttributes(Attributes.inputBuffer(initialBuffer,maxBuffer)))
+      .async.withAttributes(Attributes.inputBuffer(initialBuffer, maxBuffer)))
 }
 
 private[stream] object TupleMerger extends FanIns {
