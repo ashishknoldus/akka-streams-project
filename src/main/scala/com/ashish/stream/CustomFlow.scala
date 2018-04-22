@@ -10,7 +10,7 @@ object AsyncBufferedFlow extends CustomFlow {
 
   case class Regex(r: String)
 
-  def apply(regex: Regex, initialBuffer: Int = 1024, maxBuffer: Int = 1048576): Flow[List[String], String, NotUsed] =
-    Flow[List[String]].mapConcat(_.filter(_.matches(regex.r)))
+  def apply(regex: Regex, initialBuffer: Int = 1024, maxBuffer: Int = 1048576): Flow[String, String, NotUsed] =
+    Flow[String].filter(_.matches(regex.r))
       .async.withAttributes(Attributes.inputBuffer(initialBuffer,maxBuffer))
 }

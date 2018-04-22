@@ -17,9 +17,6 @@ object RGBGraph {
       val pipe1 = ReadFileSource(PIPE1_PATH, " ")
       val pipe2 = ReadFileSource(PIPE2_PATH, " ")
 
-      val channelOneElementsFlow = Flow[String].map(List(_))
-      val channelTwoElementsFlow = Flow[String].map(List(_))
-
       val channelOneRElements = AsyncBufferedFlow(Regex("[R].{3,}"))
       val channelOneGElements = AsyncBufferedFlow(Regex("[G].{3,}"))
       val channelOneBElements = AsyncBufferedFlow(Regex("[B].{3,}"))
@@ -27,8 +24,8 @@ object RGBGraph {
       val channelTwoGElements = AsyncBufferedFlow(Regex("[G].{3,}"))
       val channelTwoBElements = AsyncBufferedFlow(Regex("[B].{3,}"))
 
-      val broadcastElementsChannelOne = FlowBroadcast[List[String]](3)
-      val broadcastElementsChannelTwo = FlowBroadcast[List[String]](3)
+      val broadcastElementsChannelOne = FlowBroadcast[String](3)
+      val broadcastElementsChannelTwo = FlowBroadcast[String](3)
 
       val broadcastOutput = FlowBroadcast[ByteString](2)
 
@@ -41,11 +38,11 @@ object RGBGraph {
       val consoleOutput = Sink.foreach[ByteString](byteString => print(byteString.utf8String + " "))
       val fileOutput = WriteBytesFileSource(OUTPUT_PATH)
 
-      pipe1 ~> channelOneElementsFlow ~> broadcastElementsChannelOne ~> channelOneRElements ~> zipR.in0
+      pipe1 ~> broadcastElementsChannelOne ~> channelOneRElements ~> zipR.in0
       broadcastElementsChannelOne ~> channelOneGElements ~> zipG.in0
       broadcastElementsChannelOne ~> channelOneBElements ~> zipB.in0
 
-      pipe2 ~> channelTwoElementsFlow ~> broadcastElementsChannelTwo ~> channelTwoRElements ~> zipR.in1
+      pipe2 ~> broadcastElementsChannelTwo ~> channelTwoRElements ~> zipR.in1
       broadcastElementsChannelTwo ~> channelTwoGElements ~> zipG.in1
       broadcastElementsChannelTwo ~> channelTwoBElements ~> zipB.in1
 
