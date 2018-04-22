@@ -19,11 +19,13 @@ object MainRunner extends App {
     System.in.read()
     System.exit(0)
   } catch {
-    case NonFatal(ex: Exception) => system.terminate().map(_ =>
-        println(s"\n********************************************************************\n" +
-          s"********************************************************************\n" +
-          s"**  Actor system is going down. Exiting the application as well.  **\n" +
-          s"********************************************************************\n" +
-          s"********************************************************************\n"))
+    case NonFatal(ex: Exception) => system.terminate().map(_ => println(exitMessage))
   }
+
+  private val exitMessage =
+    s"\n********************************************************************\n" +
+      s"********************************************************************\n" +
+      s"**  Actor system is going down. Exiting the application as well.  **\n" +
+      s"********************************************************************\n" +
+      s"********************************************************************\n"
 }
