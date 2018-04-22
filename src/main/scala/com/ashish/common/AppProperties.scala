@@ -14,7 +14,7 @@ object AppProperties {
     case "dropHead" => OverflowStrategy.dropHead
     case "dropTail" => OverflowStrategy.dropTail
     case "dropBuffer" => OverflowStrategy.dropBuffer
-    case "dropHead" => OverflowStrategy.dropHead
+    case "dropNew" => OverflowStrategy.dropNew
     case "fail" => OverflowStrategy.fail
     case _ => OverflowStrategy.backpressure
   }
