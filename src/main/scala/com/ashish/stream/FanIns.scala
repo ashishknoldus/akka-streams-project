@@ -12,10 +12,10 @@ private[stream] sealed trait FanIns
   */
 private[stream] object StringsToTupleZipper extends FanIns {
   def apply(initialBuffer: Int = 256, maxBuffer: Int = 4096)(implicit builder: GraphDSL.Builder[NotUsed]) =
-    builder.add(ZipWith[String, String, ByteString]((str1, str2) => ByteString("" + (str1, str2)))
+    builder.add(ZipWith[String, String, (String, String)](Tuple2.apply)
       .async.withAttributes(Attributes.inputBuffer(initialBuffer, maxBuffer)))
 }
 
 private[stream] object TupleMerger extends FanIns {
-  def apply[T]()(implicit builder: GraphDSL.Builder[NotUsed]) = builder.add(Merge[T](3))
+  def apply[T](intlets: Int)(implicit builder: GraphDSL.Builder[NotUsed]) = builder.add(Merge[T](intlets))
 }
