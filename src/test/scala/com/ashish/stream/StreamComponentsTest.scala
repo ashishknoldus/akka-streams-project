@@ -19,7 +19,7 @@ class StreamComponentsTest extends TestKit(ActorSystem("test-actor-system")) wit
   val testPipeTwoPath = "test-files/pipe-two"
 
   private val classLoader = getClass.getClassLoader
-  
+
   private val pipe1Path = classLoader.getResource(testPipeOnePath).getFile
   private val pipe2Path = classLoader.getResource(testPipeTwoPath).getFile
 
