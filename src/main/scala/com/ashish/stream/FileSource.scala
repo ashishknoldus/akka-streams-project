@@ -15,7 +15,7 @@ import scala.concurrent.duration.FiniteDuration
 sealed trait FileSource
 
 object ReadBufferedFileSource extends FileSource {
-  def apply(path: String, delimiter: String, maximumFrameLength: Int = 4096, recordsBuffer: Int = 4096,
+  def apply(path: String, delimiter: String, maximumFrameLength: Int = 4096, recordsBuffer: Int = 4096 * 6,
             overflowStrategy: OverflowStrategy = OverflowStrategy.backpressure): javadsl.Source[String, NotUsed] = {
 
     /**

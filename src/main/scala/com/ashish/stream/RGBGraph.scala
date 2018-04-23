@@ -28,6 +28,10 @@ object RGBGraph {
 
       val broadcastOutput = FlowBroadcast[(String, String)](2)
 
+      val skewCheckRStream = SkewCheckerBidiFlow[String, String](4096)
+      val skewCheckGStream = SkewCheckerBidiFlow[String, String](4096)
+      val skewCheckBStream = SkewCheckerBidiFlow[String, String](4096)
+
       val zipR = StringsToTupleZipper()
       val zipG = StringsToTupleZipper()
       val zipB = StringsToTupleZipper()
@@ -39,13 +43,23 @@ object RGBGraph {
       val consoleOutput = Sink.foreach[(String, String)](print)
       val fileOutput = WriteBytesFileSource(OUTPUT_PATH)
 
-      pipe1 ~> broadcastPipeOne ~> filterPipeOneRElements ~> zipR.in0
-      broadcastPipeOne ~> filterPipeOneGElements ~> zipG.in0
-      broadcastPipeOne ~> filterPipeOneBElements ~> zipB.in0
+      pipe1 ~> broadcastPipeOne ~> filterPipeOneRElements ~> skewCheckRStream.in1
+      broadcastPipeOne ~> filterPipeOneGElements ~> skewCheckGStream.in1
+      broadcastPipeOne ~> filterPipeOneBElements ~> skewCheckBStream.in1
 
-      pipe2 ~> broadcastPipeTwo ~> filterPipeTwoRElements ~> zipR.in1
-      broadcastPipeTwo ~> filterPipeTwoGElements ~> zipG.in1
-      broadcastPipeTwo ~> filterPipeTwoBElements ~> zipB.in1
+      pipe2 ~> broadcastPipeTwo ~> filterPipeTwoRElements ~> skewCheckRStream.in2
+      broadcastPipeTwo ~> filterPipeTwoGElements ~> skewCheckGStream.in2
+      broadcastPipeTwo ~> filterPipeTwoBElements ~> skewCheckBStream.in2
+
+
+      skewCheckRStream.out1 ~> zipR.in0
+      skewCheckRStream.out2 ~> zipR.in1
+
+      skewCheckGStream.out1 ~> zipG.in0
+      skewCheckGStream.out2 ~> zipG.in1
+
+      skewCheckBStream.out1 ~> zipB.in0
+      skewCheckBStream.out2 ~> zipB.in1
 
       zipR.out ~> tupleMerger
       zipG.out ~> tupleMerger

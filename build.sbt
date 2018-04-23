@@ -1,4 +1,4 @@
-name := "akka-streams-poc"
+name := "akka-streams-project"
 
 version := "0.1"
 
