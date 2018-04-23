@@ -88,7 +88,7 @@ class SkewCheckerBidiFlow[A, B](bufferLimit: Int, skewMessage: String) extends G
         if (buffer2.nonEmpty && isAvailable(out2)) {
           push(out2, buffer2.dequeue)
         }
-        
+
         if (!hasBeenPulled(in2)) {
           tryPull[B](in2)
         }
@@ -102,7 +102,7 @@ class SkewCheckerBidiFlow[A, B](bufferLimit: Int, skewMessage: String) extends G
   override def toString = "SkewChecker"
 }
 
-object SkewCheckerBidiFlow {
+private[stream] object SkewCheckerBidiFlow {
   def apply[A, B](bufferLimit: Int, skewMessage: String = "The stream is skewed, so the buffer is being dropped")
                  (implicit builder: GraphDSL.Builder[NotUsed]): BidiShape[A, A, B, B] = {
     builder.add(new SkewCheckerBidiFlow[A, B](bufferLimit, skewMessage))
