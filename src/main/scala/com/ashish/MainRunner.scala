@@ -13,13 +13,20 @@ object MainRunner extends App {
   implicit val materializer = ActorMaterializer()
   implicit val ec: ExecutionContext = system.dispatcher
 
-  RGBGraph().run()
+  try {
+    RGBGraph().run()
+  } catch {
+    case NonFatal(ex: Exception) =>
+      ex.printStackTrace()
+      system.terminate().map(_ => println("\n********** Press enter to exit the application **********"))
+  }
 
   try {
     System.in.read()
     System.exit(0)
   } catch {
-    case NonFatal(ex: Exception) => system.terminate().map(_ => println(exitMessage))
+    case NonFatal(ex: Exception) =>
+      system.terminate().map(_ => println(exitMessage))
   }
 
   private val exitMessage =
